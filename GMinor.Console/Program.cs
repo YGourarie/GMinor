@@ -1,5 +1,4 @@
 using GMinor.Core;
-using GMinor.Core.Exceptions;
 using GMinor.Core.Rules;
 using GMinor.Console;
 using Microsoft.Extensions.Configuration;
