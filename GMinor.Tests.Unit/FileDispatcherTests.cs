@@ -1,6 +1,4 @@
 using GMinor.Core;
-using GMinor.Core.Conflicts;
-using GMinor.Core.Exceptions;
 using Moq;
 
 namespace GMinor.Tests.Unit;

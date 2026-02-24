@@ -1,4 +1,4 @@
-using GMinor.Core.Conflicts;
+using GMinor.Core;
 
 namespace GMinor.Console;
 

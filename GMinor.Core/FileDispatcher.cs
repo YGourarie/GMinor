@@ -1,9 +1,68 @@
-using GMinor.Core.Conflicts;
-using GMinor.Core.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GMinor.Core;
+
+// ── Conflict types ────────────────────────────────────────────────────────────
+
+/// <summary>Determines how a naming conflict at the destination should be resolved.</summary>
+public enum ConflictResolution { Overwrite, Skip }
+
+/// <summary>
+/// Determines how to handle a naming conflict when a file already exists at the destination.
+/// </summary>
+public interface IConflictResolver
+{
+    /// <summary>
+    /// Resolves a conflict between a source file and an existing destination file.
+    /// </summary>
+    /// <returns>
+    /// <see cref="ConflictResolution.Overwrite"/> to replace the destination,
+    /// or <see cref="ConflictResolution.Skip"/> to leave the source in place.
+    /// </returns>
+    ConflictResolution Resolve(string sourcePath, string destinationPath);
+}
+
+// ── Exceptions ────────────────────────────────────────────────────────────────
+
+/// <summary>
+/// Thrown when the source file is locked or in use by another process.
+/// </summary>
+public class FileLockedException : IOException
+{
+    /// <summary>Initializes a new instance with the path of the locked file.</summary>
+    public FileLockedException(string filePath, IOException inner)
+        : base($"File is locked or in use and cannot be moved: {filePath}", inner)
+    {
+        FilePath = filePath;
+    }
+
+    /// <summary>Gets the full path of the file that was locked.</summary>
+    public string FilePath { get; }
+}
+
+/// <summary>
+/// Thrown when a file already exists at the destination and no
+/// <see cref="IConflictResolver"/> was provided to handle it.
+/// </summary>
+public class ConflictException : IOException
+{
+    /// <summary>Initializes a new instance with source and destination paths.</summary>
+    public ConflictException(string sourcePath, string destinationPath)
+        : base($"Destination file already exists and no conflict resolver was provided. Source: '{sourcePath}', Destination: '{destinationPath}'")
+    {
+        SourcePath = sourcePath;
+        DestinationPath = destinationPath;
+    }
+
+    /// <summary>Gets the full path of the source file.</summary>
+    public string SourcePath { get; }
+
+    /// <summary>Gets the full path of the conflicting destination file.</summary>
+    public string DestinationPath { get; }
+}
+
+// ── Dispatcher ────────────────────────────────────────────────────────────────
 
 /// <summary>
 /// Routes and moves individual files using a caller-supplied routing function.
@@ -75,7 +134,6 @@ public class FileDispatcher
                 return new DispatchResult { Outcome = DispatchOutcome.Skipped, SourcePath = filePath, DestPath = destPath };
             }
 
-            // Overwrite
             _logger.LogInformation("Conflict resolved as Overwrite: replacing '{Dest}' with '{Source}'.", destPath, filePath);
             MoveFile(filePath, destPath, overwrite: true);
             return new DispatchResult { Outcome = DispatchOutcome.Overwritten, SourcePath = filePath, DestPath = destPath };
@@ -104,8 +162,6 @@ public class FileDispatcher
 
     private static bool IsFileLocked(IOException ex)
     {
-        // HResult 0x80070020 = ERROR_SHARING_VIOLATION
-        // HResult 0x80070021 = ERROR_LOCK_VIOLATION
         const int sharingViolation = unchecked((int)0x80070020);
         const int lockViolation    = unchecked((int)0x80070021);
         return ex.HResult == sharingViolation || ex.HResult == lockViolation;
