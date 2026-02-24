@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# Claude Code local settings
+.claude/
+
+# Logs produced by the app at runtime
+logs/
+
+# NuGet
+*.nupkg
+.nuget/
