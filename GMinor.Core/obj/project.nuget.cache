@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "78LdfhAgjWo=",
+  "success": true,
+  "projectFilePath": "/home/yehudahgourarie/Projects/GMinor/GMinor.Core/GMinor.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/yehudahgourarie/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.3/microsoft.extensions.dependencyinjection.abstractions.10.0.3.nupkg.sha512",
+    "/home/yehudahgourarie/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.3/microsoft.extensions.logging.abstractions.10.0.3.nupkg.sha512",
+    "/home/yehudahgourarie/.nuget/packages/microsoft.netcore.app.runtime.win-x64/10.0.3/microsoft.netcore.app.runtime.win-x64.10.0.3.nupkg.sha512",
+    "/home/yehudahgourarie/.nuget/packages/microsoft.aspnetcore.app.runtime.win-x64/10.0.3/microsoft.aspnetcore.app.runtime.win-x64.10.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
