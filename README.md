@@ -52,15 +52,9 @@ Re-run `publish.sh` whenever you update routing rules or any other code — it o
 
 ```
 GMinor.Core/                  ← Class library — all logic lives here
-│   FileDispatcher.cs         ← Orchestrates routing + file move
+│   FileDispatcher.cs         ← Dispatcher + conflict types + exceptions
 │   RoutingResult.cs          ← Output of a routing decision
 │   DispatchResult.cs         ← Outcome of a dispatch call
-│   Conflicts/
-│   │   IConflictResolver.cs  ← Interface for handling name conflicts
-│   │   ConflictResolution.cs ← Overwrite | Skip enum
-│   Exceptions/
-│   │   ConflictException.cs      ← No resolver provided + conflict exists
-│   │   FileLockedException.cs    ← Source file is locked/in use
 │   Rules/
 │       RoutingRules.cs       ← ★ THE one place to add routing logic
 
@@ -69,7 +63,7 @@ GMinor.Console/               ← One-shot console host (~60 lines)
 │   InteractiveConflictResolver.cs  ← Prompts O/S at the terminal
 │   appsettings.json          ← Set SourceFolder here
 
-GMinor.Tests.Unit/            ← Fast, no-I/O unit tests (18 tests)
+GMinor.Tests.Unit/            ← Fast, no-I/O unit tests (17 tests)
 │   RoutingRulesTests.cs      ← Tests the routing function directly
 │   FileDispatcherTests.cs    ← Tests dispatcher with mock routing + resolvers
 
