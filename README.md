@@ -27,24 +27,31 @@ dotnet run --project GMinor.Console -- --dry-run
 Run the publish script from WSL:
 
 ```bash
-~/Projects/GMinor/publish.sh
+~/Projects/GMinor/publish.sh              # publish both Console and Wpf
+~/Projects/GMinor/publish.sh --console    # Console only
+~/Projects/GMinor/publish.sh --gui        # Wpf (GUI) only
+~/Projects/GMinor/publish.sh --skip-tests # skip test run before publishing
 ```
 
-This publishes a self-contained Windows executable directly to `C:\Tools\GMinor` — no .NET installation required on the Windows side, no manual copying needed.
+This publishes self-contained Windows executables — no .NET installation required on the Windows side, no manual copying needed.
 
-Then from a Windows terminal:
-
-```cmd
-cd C:\Tools\GMinor
-
-# Route files for real
-GMinor.Console.exe
-
-# Preview without moving anything
-GMinor.Console.exe --dry-run
-```
+| Target | Output path |
+|--------|-------------|
+| Console | `C:\Tools\GMinor\Console\GMinor.Console.exe` |
+| Wpf (GUI) | `C:\Tools\GMinor\Wpf\GMinor.Wpf.exe` |
 
 Re-run `publish.sh` whenever you update routing rules or any other code — it overwrites the existing files in place.
+
+**Console usage** (from a Windows terminal):
+
+```cmd
+cd C:\Tools\GMinor\Console
+
+GMinor.Console.exe           # route files
+GMinor.Console.exe --dry-run # preview without moving
+```
+
+**GUI usage**: launch `C:\Tools\GMinor\Wpf\GMinor.Wpf.exe` directly.
 
 ---
 
@@ -69,6 +76,23 @@ GMinor.Tests.Unit/            ← Fast, no-I/O unit tests (17 tests)
 
 GMinor.Tests.Integration/     ← Real filesystem tests using temp dirs (9 tests)
     FileDispatcherIntegrationTests.cs
+
+GMinor.Wpf/                   ← WPF GUI host
+│   App.xaml / App.xaml.cs    ← Application entry point
+│   appsettings.json          ← Persisted source/destination paths
+│   ViewModels/
+│       MainViewModel.cs      ← Navigation between pages
+│       DispatchViewModel.cs  ← Folder selection, dry-run, dispatch
+│   Views/
+│       MainWindow.xaml       ← Shell with nav bar
+│       DispatchPage.xaml     ← Primary UI (folder pickers, organize button, results)
+│       HistoryPage.xaml      ← Placeholder
+│       SettingsPage.xaml     ← Placeholder
+│   Services/
+│       SettingsService.cs    ← Reads/writes appsettings.json
+│       MessageBoxConflictResolver.cs  ← Conflict dialog (Yes/No MessageBox)
+│       DispatcherConflictResolver.cs  ← Marshals conflict dialogs to UI thread
+│   Themes/                   ← Centralized WPF styles and brushes
 ```
 
 ---

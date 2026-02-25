@@ -1,0 +1,171 @@
+<Page x:Class="GMinor.Wpf.Views.DispatchPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:GMinor.Wpf.ViewModels"
+      Title="Dispatch"
+      Background="{StaticResource WindowBgBrush}">
+    <Page.DataContext>
+        <vm:DispatchViewModel/>
+    </Page.DataContext>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid MaxWidth="500"
+              Margin="40"
+              HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Heading -->
+            <TextBlock Grid.Row="0"
+                       Text="Organize Files"
+                       FontFamily="{StaticResource PrimaryFont}"
+                       FontSize="{StaticResource FontSizeXLarge}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       Margin="0,0,0,32"/>
+
+            <!-- Source folder -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                <TextBlock Text="SOURCE FOLDER"
+                           Style="{StaticResource InputLabelStyle}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Style="{StaticResource PathInputStyle}"
+                             Text="{Binding SourcePath, Mode=OneWay}"
+                             IsReadOnly="True"/>
+                    <Button Grid.Column="1"
+                            Content="Browse"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Command="{Binding BrowseSourceCommand}"
+                            Margin="8,0,0,0"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Destination folder -->
+            <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                <TextBlock Text="DESTINATION FOLDER"
+                           Style="{StaticResource InputLabelStyle}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Style="{StaticResource PathInputStyle}"
+                             Text="{Binding DestinationPath, Mode=OneWay}"
+                             IsReadOnly="True"/>
+                    <Button Grid.Column="1"
+                            Content="Browse"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Command="{Binding BrowseDestinationCommand}"
+                            Margin="8,0,0,0"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Dry run checkbox -->
+            <CheckBox Grid.Row="3"
+                      Content="Dry run (preview only — no files will be moved)"
+                      IsChecked="{Binding DryRun}"
+                      Foreground="{StaticResource TextPrimaryBrush}"
+                      FontFamily="{StaticResource PrimaryFont}"
+                      FontSize="{StaticResource FontSizeBase}"
+                      Margin="0,0,0,24"/>
+
+            <!-- Organize button -->
+            <Button Grid.Row="4"
+                    Content="ORGANIZE FILES"
+                    Style="{StaticResource PillButtonStyle}"
+                    HorizontalAlignment="Center"
+                    Command="{Binding OrganizeCommand}"
+                    Margin="0,0,0,32"/>
+
+            <!-- Results -->
+            <StackPanel Grid.Row="5"
+                        Visibility="{Binding HasResults, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           FontFamily="{StaticResource PrimaryFont}"
+                           FontSize="{StaticResource FontSizeBase}"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,16"/>
+
+                <Border Background="{StaticResource SurfaceLowBrush}"
+                        BorderBrush="{StaticResource BorderDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="24">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Moved -->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,20">
+                            <TextBlock Text="{Binding MovedCount}"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       FontSize="{StaticResource FontSizeXLarge}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Moved"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       Foreground="{StaticResource TextMutedBrush}"/>
+                        </StackPanel>
+
+                        <!-- Skipped -->
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,20">
+                            <TextBlock Text="{Binding SkippedCount}"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       FontSize="{StaticResource FontSizeXLarge}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Skipped"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       Foreground="{StaticResource TextMutedBrush}"/>
+                        </StackPanel>
+
+                        <!-- Overwritten -->
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <TextBlock Text="{Binding OverwrittenCount}"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       FontSize="{StaticResource FontSizeXLarge}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Overwritten"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       Foreground="{StaticResource TextMutedBrush}"/>
+                        </StackPanel>
+
+                        <!-- Errors -->
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <TextBlock Text="{Binding ErrorCount}"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       FontSize="{StaticResource FontSizeXLarge}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Errors"
+                                       FontFamily="{StaticResource PrimaryFont}"
+                                       Foreground="{StaticResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+</Page>

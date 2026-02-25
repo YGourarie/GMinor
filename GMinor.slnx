@@ -3,4 +3,5 @@
   <Project Path="GMinor.Core/GMinor.Core.csproj" />
   <Project Path="GMinor.Tests.Integration/GMinor.Tests.Integration.csproj" />
   <Project Path="GMinor.Tests.Unit/GMinor.Tests.Unit.csproj" />
+  <Project Path="GMinor.Wpf/GMinor.Wpf.csproj" />
 </Solution>
